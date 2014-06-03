@@ -2,11 +2,11 @@
 
 define(['backbone','marionette'], function(Backbone){
 
-   var TodoMVC = new Backbone.Marionette.Application();
+   var App = new Backbone.Marionette.Application();
 
-   TodoMVC.on('initialize:after', function () { Backbone.history.start(); });
+   App.on('initialize:after', function () { Backbone.history.start(); });
 
-   return TodoMVC;
+   return App;
 
 });
 

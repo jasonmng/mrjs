@@ -1,90 +1,49 @@
 'use strict';
 
-require([
+define([
    'application',
+   'modules/main/routes',
    'modules/main/layout',
-   'modules/main/views/listView',
+   'modules/main/views',
    'modules/main/models/collection'
-], function(App, Layout, View, Collection){
+], function(App, Router, Layout, Views, Collection){
 
-   App.module('TodoList', function (TodoList, App, Backbone, Marionette, $) {
+  var Controller = function () {
 
-      // TodoList Router
-      // ---------------
-      //
-      // Handle routes to show the active vs complete todo items
-      TodoList.Router = Marionette.AppRouter.extend({
-         appRoutes: { '*filter': 'filterItems' }
-      });
+        this.router = new Router({ controller: this });
+        this.layout   = new Layout();
 
-      // TodoList Controller (Mediator)
-      // ------------------------------
-      //
-      // Control the workflow and logic that exists at the application
-      // level, above the implementation detail of views and models
-      TodoList.Controller = function () {
-         this.todoList = new Collection();
-      };
+        this.todoList = new Collection();
 
-      _.extend(TodoList.Controller.prototype, {
-         // Start the app by showing the appropriate views
-         // and fetching the list of todo items, if there are any
-         start: function () {
-            this.showHeader(this.todoList);
-            this.showFooter(this.todoList);
-            this.showTodoList(this.todoList);
-            this.todoList.fetch();
-         },
+  };
 
-         showHeader: function (todoList) {
-            var header = new Layout.Header({ collection: todoList });
-            App.header.show( header );
-         },
+  _.extend(Controller.prototype, {
 
-         showFooter: function (todoList) {
-            var footer = new Layout.Footer({ collection: todoList });
-            App.footer.show( footer );
-         },
+     // Start the app by showing the appropriate views
+     // and fetching the list of todo items, if there are any
+     
+     start: function () {
 
-         showTodoList: function (todoList) {
-            var main = new View({ collection: todoList } );
-            App.main.show( main ); 
-         },
+        this.todoList.fetch();
+        this.getModule();
 
-         // Set the filter to show complete or all items
-         filterItems: function (filter) {
-            App.vent.trigger('todoList:filter', (filter && filter.trim()) || '');
-         }
+     }
 
-      });
+     , getModule: function() {
 
-      // TodoList Initializer
-      // --------------------
-      //
-      // Get the TodoList up and running by initializing the mediator
-      // when the the application is started, pulling in all of the
-      // existing Todo items and displaying them.
-      TodoList.addInitializer(function () {
-         var controller = new TodoList.Controller();
-         controller.router = new TodoList.Router({
-            controller: controller
-         });
+         this.layout.header.show( new Views.header({ collection: this.todoList }) );
+         this.layout.main.show( new Views.content({ collection: this.todoList }) );
+         this.layout.footer.show( new Views.footer({ collection: this.todoList }) );
 
-         controller.start();
-      });
+     }
 
-   });
+     // Set the filter to show complete or all items
+     , filterItems: function (filter) {
+        App.vent.trigger('todoList:filter', (filter && filter.trim()) || '');
+     }
 
+  });
 
-   // Application Event Handlers
-   // --------------------------
-   //
-   // Handler for filtering the list of items by showing and
-   // hiding through the use of various CSS classes
+  return Controller;
 
-   App.vent.on('todoList:filter', function (filter) {
-      filter = filter || 'all';
-      $('#todoapp').attr('class', 'filter-' + filter);
-   });
-      
 });

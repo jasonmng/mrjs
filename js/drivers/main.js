@@ -1,16 +1,43 @@
 'use strict';
 
-define(['application','backbone.localStorage','marionette'], function(App, Backbone, Marionette){
+define([
+    'application',
+    'backbone.localStorage',
+    'marionette',
+    'modules/main/controller'
+], function(App, Backbone, Marionette, C_content ){
 
-    App.addRegions({ main: '#main', header: '#header', footer: '#footer' });
+    App.addRegions({ content: 'body' });
 
     /* 
      * load in the various modules
      *------------------------------*/
 
-    require(['modules/main/controller'], function( controller ){});
-    // require(['modules/header/controller'], function( controller ){});
-    // require(['modules/footer/controller'], function( controller ){});
+    App.module('TodoList', function(TodoList, App, Backbone, Marionette, $) {
+
+        TodoList.addInitializer( function(){
+
+             var controller = new C_content();
+             App.content.show( controller.layout );
+             controller.start();
+
+        });
+
+        // Application Event Handlers
+        // --------------------------
+        //
+        // Handler for filtering the list of items by showing and
+        // hiding through the use of various CSS classes
+
+        App.vent.on('todoList:filter', function (filter) {
+
+            filter = filter || 'all';
+            $('#todoapp').attr('class', 'filter-' + filter);
+
+        });
+
+    });
+    
 
     return App;
 
