@@ -1,5 +1,4 @@
 'use strict';
-// this will require the itemView
 define([
    'modules/main/views/itemView',
    'backbone',
@@ -7,7 +6,6 @@ define([
    'underscore',
    'text!modules/main/views/template/todoComposite.html'
 ], function(itemView, Backbone, Marionette, _, html){
-
 
    // Item List View
    // --------------
@@ -31,13 +29,7 @@ define([
          'all': 'update'
       },
 
-      // Called when a view is done rendering
       onRender: function () {
-         this.update();
-      },
-
-      // Called when a view is added to a parent view
-      onShow: function(){
          this.update();
       },
 
@@ -49,8 +41,10 @@ define([
          var allCompleted = this.collection.reduce(reduceCompleted, true);
 
          this.ui.toggle.prop('checked', allCompleted);
-
          this.$el.parent().toggle(!!this.collection.length);
+
+         console.log(this.$el.parent().length);
+         
       },
 
       onToggleAllClick: function (e) {
