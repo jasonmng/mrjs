@@ -1,8 +1,9 @@
 'use strict';
 define(['backbone'], function(Backbone){
 
-	// Todo Model
-	// ----------
+   /* Todo Model
+    *--------------*/
+   
 	return Backbone.Model.extend({
 		defaults: {
 			title: '',

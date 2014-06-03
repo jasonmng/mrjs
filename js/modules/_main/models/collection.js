@@ -1,8 +1,10 @@
 'use strict';
 define(['modules/main/models/model','backbone','backbone.localStorage'], function(model, Backbone){
 
-	// Todo Collection
-	// ---------------
+   /* 
+    * Todo Collection
+    *------------------*/
+   
 	return Backbone.Collection.extend({
 		model: model,
 
